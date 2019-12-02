@@ -22,13 +22,20 @@ class Dobaos:
             time.sleep(0.01)
             res = self.sub_res.get_message()
             if res:
-                if res['type'] == 'pmessage' and res['channel'] == msg['response_channel']:
+                res_type = res['type']
+                res_ch = res['channel']
+
+                # in python3 channel has a byte type b'dobapy_....'
+                if type(res['channel']) != str:
+                    res_ch = str(res['channel'], 'utf-8')
+
+                if res_type == 'pmessage' and res_ch == msg['response_channel']:
                     resolved = True
                     parsed = json.loads(res['data'])
                     if parsed['method'] == 'error':
                         raise Exception(parsed['payload'])
                     elif parsed['method'] == 'success':
-                        return parsed['payload']                        
+                        return parsed['payload']
     def get_description(self, payload):
         return self.common_request(self.request_channel, 'get description', payload)
     def get_value(self, payload):
