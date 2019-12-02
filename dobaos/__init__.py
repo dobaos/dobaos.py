@@ -24,14 +24,17 @@ class Dobaos:
             if res:
                 res_type = res['type']
                 res_ch = res['channel']
+                res_data = res['data']
 
                 # in python3 channel has a byte type b'dobapy_....'
-                if type(res['channel']) != str:
-                    res_ch = str(res['channel'], 'utf-8')
+                if type(res_ch) != str:
+                    res_ch = str(res_ch, 'utf-8')
+                if type(res_data) != str:
+                    res_data = str(res_data, 'utf-8')
 
                 if res_type == 'pmessage' and res_ch == msg['response_channel']:
                     resolved = True
-                    parsed = json.loads(res['data'])
+                    parsed = json.loads(res_data)
                     if parsed['method'] == 'error':
                         raise Exception(parsed['payload'])
                     elif parsed['method'] == 'success':

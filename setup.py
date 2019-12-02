@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="dobaos-shabunin",
-    version="0.0.1",
+    name="dobaos",
+    version="0.0.2",
     author="Vladimir Shabunin",
     author_email="va.shabunin@physics.msu.ru",
     description="Python client for dobaos service.",
