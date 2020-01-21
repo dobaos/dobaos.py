@@ -18,7 +18,9 @@ class Dobaos:
         self.pub.publish(channel, json.dumps(msg))
         res = None
         resolved = False
-        while not resolved:
+        timeout = False
+        start = time.process_time()
+        while (not resolved and not timeout):
             time.sleep(0.01)
             res = self.sub_res.get_message()
             if res:
@@ -39,6 +41,11 @@ class Dobaos:
                         raise Exception(parsed['payload'])
                     elif parsed['method'] == 'success':
                         return parsed['payload']
+            if (time.process_time() - start) > self.request_timeout:
+                timeout = True
+        if timeout:
+            raise Exception("ERR_TIMEOUT");
+
     def get_description(self, payload):
         return self.common_request(self.request_channel, 'get description', payload)
     def get_value(self, payload):
@@ -61,11 +68,13 @@ class Dobaos:
                  request_channel='dobaos_req', 
                  service_channel='dobaos_service', 
                  broadcast_channel='dobaos_cast',
-                 response_channel='dobapy_res_*'):
+                 response_channel='dobapy_res_*',
+                 request_timeout=0.05):
         self.request_channel = request_channel
         self.service_channel = service_channel
         self.broadcast_channel = broadcast_channel
         self.response_channel = response_channel
+        self.request_timeout = request_timeout
 
         self.pub = redis.Redis(host=host, port=port)
         self.redisClient = redis.Redis(host=host, port=port)
