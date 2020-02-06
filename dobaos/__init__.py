@@ -52,6 +52,8 @@ class Dobaos:
         return self.common_request(self.request_channel, 'get value', payload)
     def set_value(self, payload):
         return self.common_request(self.request_channel, 'set value', payload)
+    def put_value(self, payload):
+        return self.common_request(self.request_channel, 'put value', payload)
     def read_value(self, payload):
         return self.common_request(self.request_channel, 'read value', payload)
     def get_progmode(self):

@@ -37,6 +37,8 @@ doba.read_value([1, 2, 3])
 doba.set_value({ "id": 1, "value": True })
 # multiple values
 doba.set_value([{ "id": 1, "value": True }, { "id": 2, "value": False}])
+# without sending to bus
+doba.put_value([{ "id": 1, "value": True }, { "id": 2, "value": False}])
 
 # get BAOS information
 print(doba.get_server_items())
