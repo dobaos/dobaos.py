@@ -50,6 +50,8 @@ class Dobaos:
         return self.common_request(self.request_channel, 'get description', payload)
     def get_value(self, payload):
         return self.common_request(self.request_channel, 'get value', payload)
+    def get_stored(self, payload):
+        return self.common_request(self.request_channel, 'get stored', payload)
     def set_value(self, payload):
         return self.common_request(self.request_channel, 'set value', payload)
     def put_value(self, payload):
@@ -63,17 +65,15 @@ class Dobaos:
     def get_server_items(self):
         return self.common_request(self.request_channel, 'get server items', None)
     def get_version(self):
-        return self.common_request(self.service_channel, 'version', None)
+        return self.common_request(self.request_channel, 'version', None)
     def reset(self):
-        return self.common_request(self.service_channel, 'reset', None)
+        return self.common_request(self.request_channel, 'reset', None)
     def __init__(self, host='localhost', port=6379,
                  request_channel='dobaos_req', 
-                 service_channel='dobaos_service', 
                  broadcast_channel='dobaos_cast',
                  response_channel='dobapy_res_*',
                  request_timeout=0.05):
         self.request_channel = request_channel
-        self.service_channel = service_channel
         self.broadcast_channel = broadcast_channel
         self.response_channel = response_channel
         self.request_timeout = request_timeout
