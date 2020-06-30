@@ -8,7 +8,10 @@ class Dobaos:
         msg = self.sub_cast.get_message()
         if msg:
             if msg['type'] == 'message':
-                payload = json.loads(msg['data'])
+                data = msg['data']
+                if type(data) != str:
+                    data = str(data, 'utf-8')
+                payload = json.loads(data)
                 return payload
     def common_request(self, channel, method, payload):
         msg = {}
