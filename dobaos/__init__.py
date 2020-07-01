@@ -4,15 +4,38 @@ import redis
 from random import random
 
 class Dobaos:
-    def get_cast(self):
+    # arrays to 
+    def process_cast(self):
         msg = self.sub_cast.get_message()
         if msg:
             if msg['type'] == 'message':
                 data = msg['data']
                 if type(data) != str:
                     data = str(data, 'utf-8')
-                payload = json.loads(data)
-                return payload
+                cast_message = json.loads(data)
+                if cast_message['method'] == "datapoint value":
+                    if isinstance(cast_message['payload'], list):
+                        self.dp_cast.extend(cast_message['payload'])
+                    else:
+                        self.dp_cast.append(cast_message['payload'])
+                elif cast_message['method'] == "server item":
+                    if isinstance(cast_message['payload'], list):
+                        self.si_cast.extend(cast_message['payload'])
+                    else:
+                        self.si_cast.append(cast_message['payload'])
+
+    def get_dpcast(self):
+        self.process_cast()
+        v = self.dp_cast.copy()
+        self.dp_cast = []
+        return v
+
+    def get_sicast(self):
+        self.process_cast()
+        v = self.si_cast.copy()
+        self.si_cast = []
+        return v
+
     def common_request(self, channel, method, payload):
         msg = {}
         msg['method'] = method
@@ -72,14 +95,16 @@ class Dobaos:
     def reset(self):
         return self.common_request(self.request_channel, 'reset', None)
     def __init__(self, host='localhost', port=6379,
-                 request_channel='dobaos_req', 
-                 broadcast_channel='dobaos_cast',
-                 response_channel='dobapy_res_*',
-                 request_timeout=0.05):
+            request_channel='dobaos_req', 
+            broadcast_channel='dobaos_cast',
+            response_channel='dobapy_res_*',
+            request_timeout=0.05):
         self.request_channel = request_channel
         self.broadcast_channel = broadcast_channel
         self.response_channel = response_channel
         self.request_timeout = request_timeout
+        self.dp_cast = []
+        self.si_cast = []
 
         self.pub = redis.Redis(host=host, port=port)
         self.redisClient = redis.Redis(host=host, port=port)

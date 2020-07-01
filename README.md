@@ -56,9 +56,23 @@ print(doba.get_version())
 doba.reset()
 
 # now process incoming messages
+def process_baos_value(payload):
+    did = payload['id']
+    value = payload['value']
+    raw = payload['raw']
+    print(did, value, raw)
+
+def process_server_item(payload):
+    sid = payload['id']
+    value = payload['value']
+    print(sid, value)
+
 while True:
     time.sleep(0.01)
-    cast = doba.get_cast()
-    if cast:
-        print(cast)
+    dpoints = doba.get_dpcast()
+    for d in dpoints:
+        process_baos_value(d)
+    sitems = doba.get_sicast()
+    for i in sitems:
+        process_server_item(i)
 ```
