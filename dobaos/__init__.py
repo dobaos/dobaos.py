@@ -7,7 +7,7 @@ class Dobaos:
     # arrays to 
     def process_cast(self):
         msg = self.sub_cast.get_message()
-        if msg:
+        while msg:
             if msg['type'] == 'message':
                 data = msg['data']
                 if type(data) != str:
@@ -23,6 +23,7 @@ class Dobaos:
                         self.si_cast.extend(cast_message['payload'])
                     else:
                         self.si_cast.append(cast_message['payload'])
+            msg = self.sub_cast.get_message()
 
     def get_dpcast(self):
         self.process_cast()
